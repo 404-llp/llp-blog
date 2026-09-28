@@ -71,3 +71,39 @@ const { title, description, date, updated, tags } = post.data;
 
   <Comments title={title} slug={post.id} />
 </BaseLayout>
+
+<script>
+  // 把正文里的表格包进"外层提示 + 内层滚动"的容器，窄屏下给出可滑动的视觉信号
+  document.querySelectorAll('.prose table').forEach((table) => {
+    const parent = table.parentElement;
+    if (!parent || parent.classList.contains('table-scroll__inner')) return;
+
+    const inner = document.createElement('div');
+    inner.className = 'table-scroll__inner';
+    inner.setAttribute('role', 'region');
+    inner.setAttribute('aria-label', '可横向滚动的表格');
+
+    const outer = document.createElement('div');
+    outer.className = 'table-scroll at-start';
+
+    table.before(outer);
+    outer.appendChild(inner);
+    inner.appendChild(table);
+
+    const sync = () => {
+      const overflow = table.scrollWidth - inner.clientWidth > 4;
+      outer.classList.toggle('is-scrollable', overflow);
+      outer.classList.toggle('at-start', inner.scrollLeft < 4);
+      outer.classList.toggle(
+        'at-end',
+        inner.scrollLeft + inner.clientWidth >= table.scrollWidth - 4
+      );
+      inner.tabIndex = overflow ? 0 : -1;
+    };
+
+    inner.addEventListener('scroll', sync, { passive: true });
+    addEventListener('resize', sync);
+    sync();
+  });
+</script>
+

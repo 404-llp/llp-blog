@@ -29,6 +29,31 @@ npm run build      # 构建到 dist/
 npm run preview    # 本地预览构建产物
 ```
 
+## 本地控制台（可视化写文章）
+
+不想碰命令行和编辑器，就用自带的图形后台：
+
+```bash
+npm run admin      # 打开 http://127.0.0.1:4322
+```
+
+界面是三栏：左边文章列表（可搜索、标注草稿/已发布），中间表单 + Markdown 编辑器，
+右边实时预览（用的是站点同一套 `global.css`，所见即所得）。顶栏四个动作：
+
+| 按钮 | 干什么 |
+| --- | --- |
+| 新建文章 | 填标题/标签/是否草稿，自动生成合规文件名和 frontmatter |
+| 构建检查 | 本地跑一次 `npm run build`，发布前先确认不会把线上构建弄挂 |
+| 保存 | 写回 `.md` 文件（快捷键 `Ctrl+S`，未保存时按钮上是 `保存 *`） |
+| 发布上线 | `git add` + `commit` + `push`，Cloudflare Pages 会自动重新部署 |
+
+细节：
+
+- 只监听 `127.0.0.1`，每次启动生成一次性 token，写操作必须带 token；文件名走白名单校验，不接受路径穿越。
+- 删除文章有二次确认，**直接删文件不走回收站**，重要内容请先发布（git 里有历史就能找回来）。
+- 底部日志抽屉会显示构建/发布的完整输出：`git` 身份没配、没配远端、构建报错，都会给出可直接照抄的修复命令，不会假成功。
+- 端口冲突时：`ADMIN_PORT=5000 npm run admin`。
+
 ## 写文章
 
 ```bash
@@ -70,6 +95,10 @@ frontmatter 支持的字段：
 │   ├── robots.txt            # 里面的 Sitemap 地址记得改
 │   └── _headers              # Cloudflare Pages 缓存与安全响应头
 ├── scripts/new-post.mjs      # npm run new
+├── tools/admin/              # 本地可视化控制台（npm run admin）
+│   ├── server.mjs            # 零依赖 HTTP 服务：文章 CRUD / 构建 / git 发布
+│   ├── index.html            # 界面骨架与样式
+│   └── admin.mjs             # 界面逻辑 + 预览用 Markdown 渲染
 └── src/
     ├── config.ts             # 全站配置
     ├── content.config.ts     # 内容集合 schema

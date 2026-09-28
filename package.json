@@ -8,7 +8,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "new": "node scripts/new-post.mjs"
+    "new": "node scripts/new-post.mjs",
+    "admin": "node tools/admin/server.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.14",

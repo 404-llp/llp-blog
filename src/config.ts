@@ -27,9 +27,9 @@ export const NAV = [
 
 /** 社交链接，留空数组就不显示图标区 */
 export const SOCIAL = [
-  { label: 'GitHub', href: 'https://https://github.com/404-llp' },
+  { label: 'GitHub', href: 'https://github.com/404-llp' },
   { label: 'RSS', href: '/rss.xml' },
-  { label: 'Email', href: '760104716@qq.com' },
+  { label: 'Email', href: 'mailto:760104716@qq.com' },
 ];
 
 /**

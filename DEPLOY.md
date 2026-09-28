@@ -280,6 +280,20 @@ npm run build && git add . && git commit -m "feat: enable giscus" && git push
 
 ## 7. 日常更新
 
+### 方式 A：用图形控制台（推荐，不用敲命令）
+
+```bash
+npm run admin      # 打开 http://127.0.0.1:4322
+```
+
+点「新建文章」→ 左边列表选中文 → 中间写 Markdown，右边实时预览 →
+「构建检查」确认没问题 → 「发布上线」，剩下的 `git add / commit / push` 它自动做。
+
+发布后底部日志会打印 git 输出；如果提示要配 `git config user.name/user.email`，
+照抄那两行执行一次即可（只需一次）。
+
+### 方式 B：命令行
+
 ```bash
 # 新建一篇草稿
 npm run new "文章标题" -- --tag 技术

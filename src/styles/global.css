@@ -1132,6 +1132,237 @@ a.mark:focus-visible,
   }
 }
 
+/* ---------- 19. 移动端加固 ---------- */
+/* 宽表格：外层负责"可以滑动"的提示，内层负责真正滚动 */
+.table-scroll {
+  position: relative;
+  max-width: 100%;
+  margin: 0 0 1.15em;
+}
+
+.table-scroll__inner {
+  max-width: 100%;
+  scrollbar-width: thin;
+}
+
+.table-scroll__inner::-webkit-scrollbar {
+  height: 4px;
+}
+
+.table-scroll__inner::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-scroll__inner::-webkit-scrollbar-thumb {
+  background: var(--rule);
+  border-radius: 2px;
+}
+
+.table-scroll table {
+  margin-bottom: 0;
+}
+
+.table-scroll.is-scrollable .table-scroll__inner {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll.is-scrollable::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 2.5rem;
+  background: linear-gradient(90deg, transparent, var(--paper) 82%);
+  pointer-events: none;
+  transition: opacity 0.25s var(--ease);
+}
+
+.table-scroll.at-end::after {
+  opacity: 0;
+}
+
+.table-scroll.is-scrollable::before {
+  content: '左右滑动 →';
+  position: absolute;
+  top: 0.4rem;
+  right: 0.6rem;
+  z-index: 1;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  padding: 0.1rem 0.35rem;
+  border-radius: 2px;
+  pointer-events: none;
+  transition: opacity 0.25s var(--ease);
+}
+
+.table-scroll:not(.at-start)::before {
+  opacity: 0;
+}
+
+/* 长链接 / 长行内代码不能把版面撑出横向滚动 */
+.prose,
+.entry__title,
+.post__title,
+.lede {
+  overflow-wrap: break-word;
+}
+
+.prose a,
+.prose code,
+.prose strong,
+.prose th,
+.prose td,
+.entry__desc {
+  overflow-wrap: anywhere;
+}
+
+.prose pre {
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 代码块自己横向滚，不把整页带跑 */
+.prose pre::-webkit-scrollbar {
+  height: 6px;
+}
+
+.prose pre::-webkit-scrollbar-thumb {
+  background: var(--rule);
+  border-radius: 3px;
+}
+
+/* 兜底 clip：内容真的超宽时不产生横向滚动，同时不影响 position: sticky */
+html,
+body {
+  overflow-x: clip;
+}
+
+@media (max-width: 860px) {
+  /* 顶部栏：加大点击区，避开刘海/圆角安全区 */
+  .topbar {
+    padding-top: calc(0.7rem + env(safe-area-inset-top, 0px));
+    padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
+  }
+
+  .topbar__nav {
+    gap: 0.15rem;
+  }
+
+  .topbar__nav a {
+    display: inline-block;
+    padding: 0.6rem 0.45rem;
+    margin: -0.6rem -0.15rem;
+    font-size: 0.9375rem;
+  }
+
+  .topbar__nav .theme-toggle {
+    padding: 0.6rem 0.4rem;
+    margin: -0.6rem -0.2rem;
+  }
+
+  .main {
+    padding-bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* 列表行：整行可点，行距够手指按 */
+  .entry a {
+    padding-top: 1.15rem;
+    padding-bottom: 1.15rem;
+  }
+
+  .entry__desc {
+    font-size: 0.9375rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* 筛选按钮：至少 40px 高的点击区 */
+  .filters {
+    gap: 0.5rem;
+    margin-inline: calc(var(--gutter) * -0.25);
+  }
+
+  .filters button {
+    padding: 0.55rem 0.9rem;
+  }
+
+  .chip {
+    padding: 0.45rem 0.8rem;
+  }
+
+  /* 宽表格由 .table-scroll 容器接管滚动，单元格保持自动换行 */
+  .prose th,
+  .prose td {
+    padding: 0.5rem 0.6rem;
+  }
+
+  .prose pre {
+    padding: 0.9rem 0.95rem;
+    font-size: 0.75rem;
+    margin-inline: calc(var(--gutter) * -0.35);
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+
+  .prose blockquote {
+    font-size: 1.125rem;
+    margin-inline: 0;
+  }
+
+  .post__meta {
+    gap: 0.35rem 1.1rem;
+  }
+
+  .facts dd {
+    font-size: 1.15rem;
+  }
+
+  .pager a,
+  .pager span {
+    padding: 1rem;
+  }
+
+  .btn {
+    padding: 0.75rem 1.1rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .masthead__meta {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .entry a {
+    grid-template-columns: 1.6rem minmax(0, 1fr);
+    gap: 0.25rem 0.6rem;
+  }
+
+  .post__title {
+    font-size: 1.85rem;
+  }
+
+  .prose {
+    font-size: 0.9375rem;
+    line-height: 1.8;
+  }
+
+  .prose h2 {
+    font-size: 1.5rem;
+  }
+
+  .prose h3 {
+    font-size: 1.25rem;
+  }
+}
+
 @media print {
   .rail,
   .topbar,
