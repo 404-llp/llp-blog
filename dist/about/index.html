@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>关于 · llp blog</title><meta name="description" content="关于 404 和这个博客。"><meta name="author" content="404"><link rel="canonical" href="https://llp-blog.cc.cd/about"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="llp blog" href="https://llp-blog.cc.cd/rss.xml"><meta property="og:type" content="website"><meta property="og:title" content="关于 · llp blog"><meta property="og:description" content="关于 404 和这个博客。"><meta property="og:url" content="https://llp-blog.cc.cd/about"><meta name="twitter:card" content="summary_large_image"><meta name="color-scheme" content="light dark"><script>
+      (() => {
+        const root = document.documentElement;
+        try {
+          const saved = localStorage.getItem('theme');
+          root.dataset.theme =
+            saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        } catch {
+          root.dataset.theme = 'light';
+        }
+      })();
+    </script><link rel="stylesheet" href="/_astro/BaseLayout.D8mwSIYR.css"></head><body><div class="progress" aria-hidden="true"><div class="progress__bar" id="progress"></div></div><header class="topbar"><a class="topbar__mark" href="/">llp blog</a><nav class="topbar__nav" aria-label="移动端导航"><a href="/">首页</a><a href="/archive">归档</a><a href="/about" aria-current="page">关于</a><button class="theme-toggle" type="button" data-toggle-theme aria-label="切换深浅色" title="切换深浅色"><span class="theme-toggle__dot"></span></button></nav></header><div class="shell"><aside class="rail"><a class="rail__mark" href="/">llp blog<span>写写写</span></a><nav class="rail__nav" aria-label="主导航"><a class="rail__link" href="/"><i>01</i>首页</a><a class="rail__link" href="/archive"><i>02</i>归档</a><a class="rail__link" href="/about" aria-current="page"><i>03</i>关于</a></nav><div class="rail__foot"><div class="rail__social"><a class="chip" href="https://https://github.com/404-llp" target="_blank" rel="noopener noreferrer">GitHub</a><a class="chip" href="/rss.xml" rel="noopener noreferrer">RSS</a><a class="chip" href="760104716@qq.com" rel="noopener noreferrer">Email</a></div><button class="theme-toggle" type="button" data-toggle-theme><span class="theme-toggle__dot"></span><span data-theme-label>切换主题</span></button><p class="mono" style="margin:0">© 2026 404</p></div></aside><main class="main" id="main"><span class="marker-bar" aria-hidden="true"></span><p class="mono">About</p><h1 class="page-title">关于这里</h1><p class="lede" style="margin-top:1.5rem">我是 404。这个博客用来存放写得慢一点的东西：技术上踩过的坑、想清楚的判断， 以及偶尔和代码无关的生活片段。</p><div class="prose" style="margin-top:2rem"><p>站点用 <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> 写成， 文章是仓库里的 Markdown 文件；部署在 Cloudflare Pages 上，push 一次就自动重新构建。 评论交给 <a href="https://giscus.app/zh-CN" target="_blank" rel="noopener noreferrer">giscus</a>， 数据存在 GitHub Discussions 里，不用自己维护数据库。</p><blockquote><p>写得慢没关系，写清楚就行。</p></blockquote><h2>怎么找到我</h2><ul><li><a href="https://https://github.com/404-llp" target="_blank" rel="noopener noreferrer">GitHub</a></li><li><a href="/rss.xml" rel="noopener noreferrer">RSS</a></li><li><a href="760104716@qq.com" rel="noopener noreferrer">Email</a></li></ul><h2>关于转载</h2><p>欢迎转载，注明出处和原文链接即可。代码片段随意使用，无需署名。</p></div><dl class="facts"><div><dt>建站</dt><dd>2026</dd></div><div><dt>技术栈</dt><dd>Astro + Markdown</dd></div><div><dt>托管</dt><dd>Cloudflare Pages</dd></div><div><dt>评论</dt><dd>giscus / GitHub</dd></div></dl><footer class="foot"><span>© 2026 404</span><span>用 Astro 写作 · 托管于 Cloudflare Pages</span><a href="/rss.xml">RSS 订阅</a></footer></main></div><script>
+      (() => {
+        const root = document.documentElement;
+        const label = document.querySelector('[data-theme-label]');
+        const paint = (t) => {
+          root.dataset.theme = t;
+          if (label) label.textContent = t === 'dark' ? '夜间模式' : '日间模式';
+        };
+        paint(root.dataset.theme);
+        document.querySelectorAll('[data-toggle-theme]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+            paint(next);
+            try {
+              localStorage.setItem('theme', next);
+            } catch {}
+          });
+        });
+
+        // 阅读进度
+        const bar = document.getElementById('progress');
+        if (bar) {
+          const update = () => {
+            const h = document.documentElement.scrollHeight - innerHeight;
+            bar.style.width = (h > 0 ? (scrollY / h) * 100 : 0) + '%';
+          };
+          addEventListener('scroll', update, { passive: true });
+          addEventListener('resize', update);
+          update();
+        }
+
+        // 评论区跟随深浅色切换
+        document.querySelectorAll('[data-toggle-theme]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (!iframe) return;
+            iframe.contentWindow.postMessage(
+              { giscus: { setConfig: { theme: root.dataset.theme === 'dark' ? 'dark' : 'light' } } },
+              'https://giscus.app'
+            );
+          });
+        });
+      })();
+    </script></body></html>

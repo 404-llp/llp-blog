@@ -1,0 +1,186 @@
+---
+import '../styles/global.css';
+import { SITE, NAV, SOCIAL } from '../config';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** og:image，留空则用站点默认 */
+  image?: string;
+}
+
+const { title, description, image } = Astro.props;
+const pageTitle = title ? `${title} · ${SITE.title}` : `${SITE.title} · ${SITE.tagline}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const year = new Date().getFullYear();
+const since = SITE.since && SITE.since < year ? `${SITE.since}–${year}` : `${year}`;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description || SITE.tagline} />
+    <meta name="author" content={SITE.author} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={SITE.title}
+      href={new URL('rss.xml', Astro.site)}
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description || SITE.tagline} />
+    <meta property="og:url" content={canonical} />
+    {image && <meta property="og:image" content={image} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="color-scheme" content="light dark" />
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        try {
+          const saved = localStorage.getItem('theme');
+          root.dataset.theme =
+            saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        } catch {
+          root.dataset.theme = 'light';
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="progress" aria-hidden="true"><div class="progress__bar" id="progress"></div></div>
+
+    <header class="topbar">
+      <a class="topbar__mark" href="/">{SITE.title}</a>
+      <nav class="topbar__nav" aria-label="移动端导航">
+        {
+          NAV.map((item) => (
+            <a href={item.href} aria-current={Astro.url.pathname === item.href ? 'page' : undefined}>
+              {item.label}
+            </a>
+          ))
+        }
+        <button
+          class="theme-toggle"
+          type="button"
+          data-toggle-theme
+          aria-label="切换深浅色"
+          title="切换深浅色"
+        >
+          <span class="theme-toggle__dot"></span>
+        </button>
+      </nav>
+    </header>
+
+    <div class="shell">
+      <aside class="rail">
+        <a class="rail__mark" href="/">
+          {SITE.title}
+          <span>{SITE.tagline}</span>
+        </a>
+
+        <nav class="rail__nav" aria-label="主导航">
+          {
+            NAV.map((item, i) => (
+              <a
+                class="rail__link"
+                href={item.href}
+                aria-current={Astro.url.pathname === item.href ? 'page' : undefined}
+              >
+                <i>{String(i + 1).padStart(2, '0')}</i>
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+
+        <div class="rail__foot">
+          <div class="rail__social">
+            {
+              SOCIAL.map((s) => (
+                <a
+                  class="chip"
+                  href={s.href}
+                  target={s.href.startsWith('http') ? '_blank' : undefined}
+                  rel="noopener noreferrer"
+                >
+                  {s.label}
+                </a>
+              ))
+            }
+          </div>
+          <button class="theme-toggle" type="button" data-toggle-theme>
+            <span class="theme-toggle__dot"></span>
+            <span data-theme-label>切换主题</span>
+          </button>
+          <p class="mono" style="margin:0">© {since} {SITE.author}</p>
+          {SITE.icp && (
+            <a class="mono" href="https://beian.miit.gov.cn" target="_blank" rel="noopener noreferrer">
+              {SITE.icp}
+            </a>
+          )}
+        </div>
+      </aside>
+
+      <main class="main" id="main">
+        <slot />
+
+        <footer class="foot">
+          <span>© {since} {SITE.author}</span>
+          <span>{SITE.icp || '用 Astro 写作 · 托管于 Cloudflare Pages'}</span>
+          <a href="/rss.xml">RSS 订阅</a>
+        </footer>
+      </main>
+    </div>
+
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        const label = document.querySelector('[data-theme-label]');
+        const paint = (t) => {
+          root.dataset.theme = t;
+          if (label) label.textContent = t === 'dark' ? '夜间模式' : '日间模式';
+        };
+        paint(root.dataset.theme);
+        document.querySelectorAll('[data-toggle-theme]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+            paint(next);
+            try {
+              localStorage.setItem('theme', next);
+            } catch {}
+          });
+        });
+
+        // 阅读进度
+        const bar = document.getElementById('progress');
+        if (bar) {
+          const update = () => {
+            const h = document.documentElement.scrollHeight - innerHeight;
+            bar.style.width = (h > 0 ? (scrollY / h) * 100 : 0) + '%';
+          };
+          addEventListener('scroll', update, { passive: true });
+          addEventListener('resize', update);
+          update();
+        }
+
+        // 评论区跟随深浅色切换
+        document.querySelectorAll('[data-toggle-theme]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (!iframe) return;
+            iframe.contentWindow.postMessage(
+              { giscus: { setConfig: { theme: root.dataset.theme === 'dark' ? 'dark' : 'light' } } },
+              'https://giscus.app'
+            );
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+# Cloudflare Pages 项目配置
+# 控制台部署时这些设置也可以在 Pages 项目的 "Settings → Build" 里填
+name = "personal-blog"
+compatibility_date = "2026-01-01"
+pages_build_output_dir = "dist"
+
+# 阅读计数用的 KV 存储（可选）。
+# 先在 Cloudflare 控制台建好 KV，再把 id 填进来；不填也能跑，只是计数不生效。
+# [[kv_namespaces]]
+# binding = "VIEWS"
+# id = "把你的 KV namespace id 粘到这里"

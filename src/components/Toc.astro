@@ -1,0 +1,55 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+  /** 收录的最大层级，默认到 h3 */
+  depth?: number;
+}
+
+const { headings, depth = 3 } = Astro.props;
+const items = headings.filter((h) => h.depth >= 2 && h.depth <= depth);
+---
+
+{
+  items.length > 0 && (
+    <nav class="toc" aria-label="目录">
+      <h3>目录</h3>
+      <ol data-toc>
+        {items.map((h) => (
+          <li>
+            <a href={`#${h.slug}`} class={h.depth === 3 ? 'toc__h3' : undefined} data-toc-link>
+              {h.text}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}
+
+<script>
+  // 滚动时高亮当前小节
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]'));
+  const targets = links
+    .map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1))))
+    .filter((el): el is HTMLElement => Boolean(el));
+
+  if (links.length && 'IntersectionObserver' in window) {
+    const visible = new Set<string>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) visible.add(e.target.id);
+          else visible.delete(e.target.id);
+        }
+        const active = targets.find((t) => visible.has(t.id))?.id;
+        links.forEach((a) =>
+          a.classList.toggle('is-active', decodeURIComponent(a.hash.slice(1)) === active)
+        );
+      },
+      { rootMargin: '-15% 0px -70% 0px', threshold: 0 }
+    );
+    targets.forEach((t) => io.observe(t));
+  }
+</script>

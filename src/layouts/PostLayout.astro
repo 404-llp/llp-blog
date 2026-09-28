@@ -1,0 +1,73 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Toc from '../components/Toc.astro';
+import ViewCounter from '../components/ViewCounter.astro';
+import Comments from '../components/Comments.astro';
+import { fmtDate } from '../utils/format';
+import type { CollectionEntry } from 'astro:content';
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  headings: MarkdownHeading[];
+  minutes: number;
+  prev?: CollectionEntry<'blog'>;
+  next?: CollectionEntry<'blog'>;
+}
+
+const { post, headings, minutes, prev, next } = Astro.props;
+const { title, description, date, updated, tags } = post.data;
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="post">
+    <span class="marker-bar" aria-hidden="true"></span>
+    <p class="post__crumb">
+      <a href="/archive">归档</a>
+      <span aria-hidden="true">/</span>
+      <span>{fmtDate(date)}</span>
+    </p>
+
+    <h1 class="post__title">{title}</h1>
+    {description && <p class="post__desc">{description}</p>}
+
+    <div class="post__meta">
+      <span>发布于 <b>{fmtDate(date)}</b></span>
+      {updated && <span>更新于 <b>{fmtDate(updated)}</b></span>}
+      <span>约 <b>{minutes}</b> 分钟读完</span>
+      {tags.length > 0 && (
+        <span class="entry__tags" style="margin:0">
+          {tags.map((t) => <span class="tag">#{t}</span>)}
+        </span>
+      )}
+    </div>
+
+    <div class="post__layout">
+      <div class="prose"><slot /></div>
+
+      <aside class="post__aside">
+        <Toc headings={headings} />
+        <ViewCounter slug={post.id} large />
+      </aside>
+    </div>
+
+    {(prev || next) && (
+      <nav class="pager" aria-label="文章导航">
+        {prev ? (
+          <a href={`/blog/${prev.id}`} class="pager__prev">
+            <span class="mono">← 上一篇</span>
+            <span class="pager__t">{prev.data.title}</span>
+          </a>
+        ) : <span />}
+        {next ? (
+          <a href={`/blog/${next.id}`} class="pager__next">
+            <span class="mono">下一篇 →</span>
+            <span class="pager__t">{next.data.title}</span>
+          </a>
+        ) : <span />}
+      </nav>
+    )}
+  </article>
+
+  <Comments title={title} slug={post.id} />
+</BaseLayout>

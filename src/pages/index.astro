@@ -1,0 +1,80 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostEntry from '../components/PostEntry.astro';
+import { SITE } from '../config';
+import { excerpt, fmtDate } from '../utils/format';
+
+const all = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const latest = all.slice(0, SITE.latestCount);
+const [line1, line2] = SITE.hero.split('\n');
+const tags = [...new Set(all.flatMap((p) => p.data.tags))];
+const words = all.reduce((sum, p) => sum + (p.body?.replace(/\s/g, '').length ?? 0), 0);
+---
+
+<BaseLayout>
+  <header class="masthead">
+    <span class="marker-bar" aria-hidden="true"></span>
+    <div class="masthead__meta">
+      <span>{SITE.author} 的个人博客</span>
+      <span>共 {all.length} 篇 · {words.toLocaleString('en-US')} 字</span>
+      <span>更新于 {latest[0] ? fmtDate(latest[0].data.date) : '—'}</span>
+    </div>
+
+    <h1 class="masthead__title">
+      {line1}<br />{line2 && <em>{line2}</em>}
+    </h1>
+
+    <p class="masthead__lead">{SITE.tagline}</p>
+
+    <div class="btn-row">
+      <a class="btn" href="/archive">浏览全部文章</a>
+      <a class="btn btn--ghost" href="/about">关于我</a>
+      <a class="btn btn--ghost" href="/rss.xml">RSS</a>
+    </div>
+  </header>
+
+  <hr class="masthead__rule" />
+
+  <section class="section" style="margin-top:clamp(2rem,5vw,3rem)">
+    <div class="section-head">
+      <h2>最近写下的</h2>
+      <span class="section-head__aside">
+        <a href="/archive">全部 {all.length} 篇 →</a>
+      </span>
+    </div>
+
+    <ul class="entries">
+      {
+        latest.map((post, i) => (
+          <PostEntry post={post} index={i} desc={post.data.description || excerpt(post.body ?? '')} />
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- 下面这块是个人化的“现在”，随时改成你自己的内容 -->
+  <section class="section">
+    <div class="section-head">
+      <h2>现在</h2>
+      <span class="section-head__aside">Now</span>
+    </div>
+    <dl class="facts">
+      <div>
+        <dt>在写</dt>
+        <dd>一个跑得比自己预期久的小工具</dd>
+      </div>
+      <div>
+        <dt>在读</dt>
+        <dd>《程序员修炼之道》第二遍</dd>
+      </div>
+      <div>
+        <dt>在琢磨</dt>
+        <dd>{tags.slice(0, 3).join(' · ') || '下一篇文章写什么'}</dd>
+      </div>
+    </dl>
+  </section>
+</BaseLayout>

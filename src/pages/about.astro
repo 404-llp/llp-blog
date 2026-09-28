@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE, SOCIAL } from '../config';
+---
+
+<BaseLayout
+  title="关于"
+  description={`关于 ${SITE.author} 和这个博客。`}
+>
+  <span class="marker-bar" aria-hidden="true"></span>
+  <p class="mono">About</p>
+  <h1 class="page-title">关于这里</h1>
+
+  <p class="lede" style="margin-top:1.5rem">
+    我是 {SITE.author}。这个博客用来存放写得慢一点的东西：技术上踩过的坑、想清楚的判断，
+    以及偶尔和代码无关的生活片段。
+  </p>
+
+  <div class="prose" style="margin-top:2rem">
+    <p>
+      站点用 <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> 写成，
+      文章是仓库里的 Markdown 文件；部署在 Cloudflare Pages 上，push 一次就自动重新构建。
+      评论交给 <a href="https://giscus.app/zh-CN" target="_blank" rel="noopener noreferrer">giscus</a>，
+      数据存在 GitHub Discussions 里，不用自己维护数据库。
+    </p>
+
+    <blockquote>
+      <p>写得慢没关系，写清楚就行。</p>
+    </blockquote>
+
+    <h2>怎么找到我</h2>
+    <ul>
+      {
+        SOCIAL.map((s) => (
+          <li>
+            <a href={s.href} target={s.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer">
+              {s.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <h2>关于转载</h2>
+    <p>
+      欢迎转载，注明出处和原文链接即可。代码片段随意使用，无需署名。
+    </p>
+  </div>
+
+  <dl class="facts">
+    <div>
+      <dt>建站</dt>
+      <dd>{SITE.since}</dd>
+    </div>
+    <div>
+      <dt>技术栈</dt>
+      <dd>Astro + Markdown</dd>
+    </div>
+    <div>
+      <dt>托管</dt>
+      <dd>Cloudflare Pages</dd>
+    </div>
+    <div>
+      <dt>评论</dt>
+      <dd>giscus / GitHub</dd>
+    </div>
+  </dl>
+</BaseLayout>

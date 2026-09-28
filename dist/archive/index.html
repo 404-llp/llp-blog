@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>归档 · llp blog</title><meta name="description" content="全部 1 篇文章，按时间倒序排列。"><meta name="author" content="404"><link rel="canonical" href="https://llp-blog.cc.cd/archive"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="llp blog" href="https://llp-blog.cc.cd/rss.xml"><meta property="og:type" content="website"><meta property="og:title" content="归档 · llp blog"><meta property="og:description" content="全部 1 篇文章，按时间倒序排列。"><meta property="og:url" content="https://llp-blog.cc.cd/archive"><meta name="twitter:card" content="summary_large_image"><meta name="color-scheme" content="light dark"><script>
+      (() => {
+        const root = document.documentElement;
+        try {
+          const saved = localStorage.getItem('theme');
+          root.dataset.theme =
+            saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        } catch {
+          root.dataset.theme = 'light';
+        }
+      })();
+    </script><link rel="stylesheet" href="/_astro/BaseLayout.D8mwSIYR.css"></head><body><div class="progress" aria-hidden="true"><div class="progress__bar" id="progress"></div></div><header class="topbar"><a class="topbar__mark" href="/">llp blog</a><nav class="topbar__nav" aria-label="移动端导航"><a href="/">首页</a><a href="/archive" aria-current="page">归档</a><a href="/about">关于</a><button class="theme-toggle" type="button" data-toggle-theme aria-label="切换深浅色" title="切换深浅色"><span class="theme-toggle__dot"></span></button></nav></header><div class="shell"><aside class="rail"><a class="rail__mark" href="/">llp blog<span>写写写</span></a><nav class="rail__nav" aria-label="主导航"><a class="rail__link" href="/"><i>01</i>首页</a><a class="rail__link" href="/archive" aria-current="page"><i>02</i>归档</a><a class="rail__link" href="/about"><i>03</i>关于</a></nav><div class="rail__foot"><div class="rail__social"><a class="chip" href="https://https://github.com/404-llp" target="_blank" rel="noopener noreferrer">GitHub</a><a class="chip" href="/rss.xml" rel="noopener noreferrer">RSS</a><a class="chip" href="760104716@qq.com" rel="noopener noreferrer">Email</a></div><button class="theme-toggle" type="button" data-toggle-theme><span class="theme-toggle__dot"></span><span data-theme-label>切换主题</span></button><p class="mono" style="margin:0">© 2026 404</p></div></aside><main class="main" id="main"><span class="marker-bar" aria-hidden="true"></span><p class="mono">Archive</p><h1 class="page-title">归档</h1><p class="lede" style="margin-top:1.25rem">一共写了 1 篇。点下面的标签可以筛选，也可以直接用浏览器的 Ctrl/Cmd + F 找关键词。</p><div class="filters" role="group" aria-label="按标签筛选"><button type="button" data-filter="" aria-pressed="true">全部 1</button><button type="button" data-filter="随笔" aria-pressed="false">#随笔 1</button></div><div data-archive><section data-year-group><p class="year">2026</p><ul class="entries"><li class="entry" data-tags="随笔"><a href="/blog/2026-09-28-草稿"><span class="entry__no">01</span><h3 class="entry__title"><span class="mark">草稿</span></h3><span class="entry__date">2026-09-28</span><p class="entry__desc">从这里开始写。 第一个小标题 正文段落。写完把 frontmatter 里的 draft 改成 false （或删掉这一行）就会发布。</p><span class="entry__tags"><span class="tag is-dim">#随笔</span></span></a></li></ul></section></div><p class="empty" data-empty hidden>这个标签下还没有文章，换一个试试。</p><footer class="foot"><span>© 2026 404</span><span>用 Astro 写作 · 托管于 Cloudflare Pages</span><a href="/rss.xml">RSS 订阅</a></footer></main></div><script>
+      (() => {
+        const root = document.documentElement;
+        const label = document.querySelector('[data-theme-label]');
+        const paint = (t) => {
+          root.dataset.theme = t;
+          if (label) label.textContent = t === 'dark' ? '夜间模式' : '日间模式';
+        };
+        paint(root.dataset.theme);
+        document.querySelectorAll('[data-toggle-theme]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+            paint(next);
+            try {
+              localStorage.setItem('theme', next);
+            } catch {}
+          });
+        });
+
+        // 阅读进度
+        const bar = document.getElementById('progress');
+        if (bar) {
+          const update = () => {
+            const h = document.documentElement.scrollHeight - innerHeight;
+            bar.style.width = (h > 0 ? (scrollY / h) * 100 : 0) + '%';
+          };
+          addEventListener('scroll', update, { passive: true });
+          addEventListener('resize', update);
+          update();
+        }
+
+        // 评论区跟随深浅色切换
+        document.querySelectorAll('[data-toggle-theme]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (!iframe) return;
+            iframe.contentWindow.postMessage(
+              { giscus: { setConfig: { theme: root.dataset.theme === 'dark' ? 'dark' : 'light' } } },
+              'https://giscus.app'
+            );
+          });
+        });
+      })();
+    </script></body></html><script type="module">var e=Array.from(document.querySelectorAll(`[data-filter]`)),t=Array.from(document.querySelectorAll(`.entry`)),n=Array.from(document.querySelectorAll(`[data-year-group]`)),r=document.querySelector(`[data-empty]`);function i(i){let a=0;for(let e of t){let t=e.dataset.tags??``,n=!i||t.split(` `).includes(i);e.hidden=!n,n&&a++}for(let e of n){let t=e.querySelectorAll(`.entry:not([hidden])`).length;e.hidden=t===0,e.style.display=t===0?`none`:``}r&&(r.hidden=a!==0);for(let t of e)t.setAttribute(`aria-pressed`,String(t.dataset.filter===i))}e.forEach(e=>e.addEventListener(`click`,()=>i(e.dataset.filter??``)));var a=decodeURIComponent(location.hash.slice(1)).toLowerCase();a&&e.some(e=>e.dataset.filter===a)&&i(a);</script>

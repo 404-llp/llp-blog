@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>草稿 · llp blog</title><meta name="description" content="写写写"><meta name="author" content="404"><link rel="canonical" href="https://llp-blog.cc.cd/blog/2026-09-28-%E8%8D%89%E7%A8%BF"><link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="alternate" type="application/rss+xml" title="llp blog" href="https://llp-blog.cc.cd/rss.xml"><meta property="og:type" content="website"><meta property="og:title" content="草稿 · llp blog"><meta property="og:description" content="写写写"><meta property="og:url" content="https://llp-blog.cc.cd/blog/2026-09-28-%E8%8D%89%E7%A8%BF"><meta name="twitter:card" content="summary_large_image"><meta name="color-scheme" content="light dark"><script>
+      (() => {
+        const root = document.documentElement;
+        try {
+          const saved = localStorage.getItem('theme');
+          root.dataset.theme =
+            saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        } catch {
+          root.dataset.theme = 'light';
+        }
+      })();
+    </script><link rel="stylesheet" href="/_astro/BaseLayout.D8mwSIYR.css"></head><body><div class="progress" aria-hidden="true"><div class="progress__bar" id="progress"></div></div><header class="topbar"><a class="topbar__mark" href="/">llp blog</a><nav class="topbar__nav" aria-label="移动端导航"><a href="/">首页</a><a href="/archive">归档</a><a href="/about">关于</a><button class="theme-toggle" type="button" data-toggle-theme aria-label="切换深浅色" title="切换深浅色"><span class="theme-toggle__dot"></span></button></nav></header><div class="shell"><aside class="rail"><a class="rail__mark" href="/">llp blog<span>写写写</span></a><nav class="rail__nav" aria-label="主导航"><a class="rail__link" href="/"><i>01</i>首页</a><a class="rail__link" href="/archive"><i>02</i>归档</a><a class="rail__link" href="/about"><i>03</i>关于</a></nav><div class="rail__foot"><div class="rail__social"><a class="chip" href="https://https://github.com/404-llp" target="_blank" rel="noopener noreferrer">GitHub</a><a class="chip" href="/rss.xml" rel="noopener noreferrer">RSS</a><a class="chip" href="760104716@qq.com" rel="noopener noreferrer">Email</a></div><button class="theme-toggle" type="button" data-toggle-theme><span class="theme-toggle__dot"></span><span data-theme-label>切换主题</span></button><p class="mono" style="margin:0">© 2026 404</p></div></aside><main class="main" id="main"><article class="post"><span class="marker-bar" aria-hidden="true"></span><p class="post__crumb"><a href="/archive">归档</a><span aria-hidden="true">/</span><span>2026-09-28</span></p><h1 class="post__title">草稿</h1><div class="post__meta"><span>发布于 <b>2026-09-28</b></span><span>约 <b>1</b> 分钟读完</span><span class="entry__tags" style="margin:0"><span class="tag">#随笔</span></span></div><div class="post__layout"><div class="prose"><p>从这里开始写。</p>
+<h2 id="第一个小标题">第一个小标题</h2>
+<p>正文段落。写完把 frontmatter 里的 <code>draft</code> 改成 <code>false</code>（或删掉这一行）就会发布。</p>
+</div><aside class="post__aside"><nav class="toc" aria-label="目录"><h3>目录</h3><ol data-toc><li><a href="#第一个小标题" data-toc-link>第一个小标题</a></li></ol></nav><script type="module">var e=Array.from(document.querySelectorAll(`[data-toc-link]`)),t=e.map(e=>document.getElementById(decodeURIComponent(e.hash.slice(1)))).filter(e=>!!e);if(e.length&&`IntersectionObserver`in window){let n=new Set,r=new IntersectionObserver(r=>{for(let e of r)e.isIntersecting?n.add(e.target.id):n.delete(e.target.id);let i=t.find(e=>n.has(e.id))?.id;e.forEach(e=>e.classList.toggle(`is-active`,decodeURIComponent(e.hash.slice(1))===i))},{rootMargin:`-15% 0px -70% 0px`,threshold:0});t.forEach(e=>r.observe(e))}</script><span class="counter" data-views-box hidden aria-live="polite"><b data-views="2026-09-28-草稿">···</b>次阅读</span><script type="module">var e=document.querySelector(`[data-views-box]`),t=document.querySelector(`[data-views]`);if(e&&t){let n=t.dataset.views;fetch(`/api/views/${encodeURIComponent(n)}`,{method:`POST`,cache:`no-store`}).then(e=>e.ok?e.json():Promise.reject(e.status)).then(({views:n})=>{t.textContent=String(n),e.removeAttribute(`hidden`)}).catch(()=>{})}</script></aside></div></article><section class="comments" id="comments"><div class="comments__head"><h2>评论</h2><p class="comments__note">评论托管在 GitHub Discussions，用 GitHub 账号发言，邮件可收到回复。</p></div><script src="https://giscus.app/client.js" data-repo="404-llp/blog-comments" data-repo-id="R_kgDOUwKalg" data-category="Announcements" data-category-id="DIC_kwDOUwKals4DGlUj" data-mapping="specific" data-term="2026-09-28-草稿" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" crossorigin="anonymous" async></script></section><footer class="foot"><span>© 2026 404</span><span>用 Astro 写作 · 托管于 Cloudflare Pages</span><a href="/rss.xml">RSS 订阅</a></footer></main></div><script>
+      (() => {
+        const root = document.documentElement;
+        const label = document.querySelector('[data-theme-label]');
+        const paint = (t) => {
+          root.dataset.theme = t;
+          if (label) label.textContent = t === 'dark' ? '夜间模式' : '日间模式';
+        };
+        paint(root.dataset.theme);
+        document.querySelectorAll('[data-toggle-theme]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+            paint(next);
+            try {
+              localStorage.setItem('theme', next);
+            } catch {}
+          });
+        });
+
+        // 阅读进度
+        const bar = document.getElementById('progress');
+        if (bar) {
+          const update = () => {
+            const h = document.documentElement.scrollHeight - innerHeight;
+            bar.style.width = (h > 0 ? (scrollY / h) * 100 : 0) + '%';
+          };
+          addEventListener('scroll', update, { passive: true });
+          addEventListener('resize', update);
+          update();
+        }
+
+        // 评论区跟随深浅色切换
+        document.querySelectorAll('[data-toggle-theme]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (!iframe) return;
+            iframe.contentWindow.postMessage(
+              { giscus: { setConfig: { theme: root.dataset.theme === 'dark' ? 'dark' : 'light' } } },
+              'https://giscus.app'
+            );
+          });
+        });
+      })();
+    </script></body></html>
