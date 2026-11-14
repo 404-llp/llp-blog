@@ -1,11 +1,10 @@
 ---
 title: 这是一篇草稿示例
-description: draft 为 true 时不会出现在线上站点，也不会进入 RSS 和 sitemap。
+description: ""
 date: 2026-09-28
 tags: [随笔]
 draft: true
 ---
-
 ## 草稿怎么用
 
 `frontmatter` 里写上 `draft: true`，构建时就会被过滤掉：
