@@ -1,0 +1,17 @@
+# Cloudflare Pages 响应头配置
+# 构建产物带内容哈希，可以放心长缓存
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  X-Frame-Options: SAMEORIGIN
+
+/sitemap-index.xml
+  Content-Type: application/xml
+
+/rss.xml
+  Content-Type: application/xml; charset=utf-8
+  Cache-Control: public, max-age=3600

@@ -1,0 +1,92 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostEntry from '../components/PostEntry.astro';
+import { excerpt } from '../utils/format';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const tagCount = posts.reduce<Record<string, number>>((acc, p) => {
+  for (const t of p.data.tags) acc[t] = (acc[t] ?? 0) + 1;
+  return acc;
+}, {});
+const tags = Object.entries(tagCount).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+
+const years = [...new Set(posts.map((p) => p.data.date.getFullYear()))].sort((a, b) => b - a);
+---
+
+<BaseLayout
+  title="归档"
+  description={`全部 ${posts.length} 篇文章，按时间倒序排列。`}
+>
+  <span class="marker-bar" aria-hidden="true"></span>
+  <p class="mono">Archive</p>
+  <h1 class="page-title">归档</h1>
+  <p class="lede" style="margin-top:1.25rem">
+    一共写了 {posts.length} 篇。点下面的标签可以筛选，也可以直接用浏览器的 Ctrl/Cmd + F 找关键词。
+  </p>
+
+  <div class="filters" role="group" aria-label="按标签筛选">
+    <button type="button" data-filter="" aria-pressed="true">全部 {posts.length}</button>
+    {tags.map(([tag, n]) => (
+      <button type="button" data-filter={tag.toLowerCase()} aria-pressed="false">
+        #{tag} {n}
+      </button>
+    ))}
+  </div>
+
+  <div data-archive>
+    {
+      years.map((year) => (
+        <section data-year-group>
+          <p class="year">{year}</p>
+          <ul class="entries">
+            {posts
+              .map((post, i) => ({ post, i }))
+              .filter(({ post }) => post.data.date.getFullYear() === year)
+              .map(({ post, i }) => (
+                <PostEntry
+                  post={post}
+                  index={i}
+                  desc={post.data.description || excerpt(post.body ?? '')}
+                />
+              ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+
+  <p class="empty" data-empty hidden>这个标签下还没有文章，换一个试试。</p>
+</BaseLayout>
+
+<script>
+  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+  const entries = Array.from(document.querySelectorAll<HTMLElement>('.entry'));
+  const groups = Array.from(document.querySelectorAll<HTMLElement>('[data-year-group]'));
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+
+  function apply(filter: string) {
+    let shown = 0;
+    for (const entry of entries) {
+      const tags = entry.dataset.tags ?? '';
+      const hit = !filter || tags.split(' ').includes(filter);
+      entry.hidden = !hit;
+      if (hit) shown++;
+    }
+    for (const group of groups) {
+      const visible = group.querySelectorAll('.entry:not([hidden])').length;
+      group.hidden = visible === 0;
+      group.style.display = visible === 0 ? 'none' : '';
+    }
+    if (empty) empty.hidden = shown !== 0;
+    for (const b of buttons) b.setAttribute('aria-pressed', String(b.dataset.filter === filter));
+  }
+
+  buttons.forEach((b) => b.addEventListener('click', () => apply(b.dataset.filter ?? '')));
+
+  const hash = decodeURIComponent(location.hash.slice(1)).toLowerCase();
+  if (hash && buttons.some((b) => b.dataset.filter === hash)) apply(hash);
+</script>

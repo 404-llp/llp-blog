@@ -1,0 +1,29 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { fmtDate } from '../utils/format';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  index: number;
+  /** 摘要文字，父组件用 frontmatter description 或正文首段生成 */
+  desc?: string;
+  showTags?: boolean;
+}
+
+const { post, index, desc, showTags = true } = Astro.props;
+const { title, date, tags } = post.data;
+---
+
+<li class="entry" data-tags={tags.join(' ').toLowerCase()}>
+  <a href={`/blog/${post.id}`}>
+    <span class="entry__no">{String(index + 1).padStart(2, '0')}</span>
+    <h3 class="entry__title"><span class="mark">{title}</span></h3>
+    <span class="entry__date">{fmtDate(date)}</span>
+    {desc && <p class="entry__desc">{desc}</p>}
+    {showTags && tags.length > 0 && (
+      <span class="entry__tags">
+        {tags.map((t) => <span class="tag is-dim">#{t}</span>)}
+      </span>
+    )}
+  </a>
+</li>

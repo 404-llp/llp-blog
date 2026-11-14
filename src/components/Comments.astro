@@ -1,0 +1,49 @@
+---
+import { GISCUS } from '../config';
+
+interface Props {
+  title: string;
+  slug: string;
+}
+
+const { title, slug } = Astro.props;
+const enabled = Boolean(GISCUS.repo && GISCUS.repoId && GISCUS.categoryId);
+---
+
+<section class="comments" id="comments">
+  <div class="comments__head">
+    <h2>评论</h2>
+    <p class="comments__note">
+      评论托管在 GitHub Discussions，用 GitHub 账号发言，邮件可收到回复。
+    </p>
+  </div>
+
+  {
+    enabled ? (
+      <script
+        is:inline
+        src="https://giscus.app/client.js"
+        data-repo={GISCUS.repo}
+        data-repo-id={GISCUS.repoId}
+        data-category={GISCUS.category}
+        data-category-id={GISCUS.categoryId}
+        data-mapping="specific"
+        data-term={slug}
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme={GISCUS.theme}
+        data-lang={GISCUS.lang}
+        crossorigin="anonymous"
+        async
+      />
+    ) : (
+      <div class="comments__off">
+        评论还没开启。在 <code>src/config.ts</code> 里填入 giscus 的
+        <code>repo</code> / <code>repoId</code> / <code>category</code> / <code>categoryId</code>
+        四个字段后重新部署即可。申请地址：<code>giscus.app/zh-CN</code>
+      </div>
+    )
+  }
+</section>

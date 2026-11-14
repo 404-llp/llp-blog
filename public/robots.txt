@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://llp-blog.cc.cd/sitemap-index.xml

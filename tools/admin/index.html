@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>博客控制台</title>
+    <style>
+      :root {
+        --paper: #f1f3ef;
+        --surface: #ffffff;
+        --ink: #131a15;
+        --ink-soft: #38433c;
+        --muted: #6d7a71;
+        --rule: #d7ddd4;
+        --rule-soft: #e6eae3;
+        --pine: #1d5743;
+        --pine-wash: #e6efea;
+        --marker: #c9f24e;
+        --danger: #a83a26;
+        --font-display: 'Songti SC', 'STSong', 'Noto Serif CJK SC', serif;
+        --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+          'Microsoft YaHei', sans-serif;
+        --font-mono: ui-monospace, 'IBM Plex Mono', SFMono-Regular, Menlo, Consolas, monospace;
+      }
+      html[data-theme='dark'] {
+        --paper: #0d110e;
+        --surface: #141a15;
+        --ink: #e8ece4;
+        --ink-soft: #c2c9c0;
+        --muted: #8b9790;
+        --rule: #232b25;
+        --rule-soft: #1b211c;
+        --pine: #7fd0a6;
+        --pine-wash: #16241d;
+        --marker: #b6e03c;
+        --danger: #f08a72;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--font-body);
+        font-size: 14px;
+        line-height: 1.6;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      ::selection {
+        background: var(--marker);
+      }
+      .mono {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      /* 顶栏 */
+      header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.7rem 1rem;
+        border-bottom: 1px solid var(--ink);
+        background: var(--paper);
+        flex-wrap: wrap;
+      }
+      .brand {
+        font-family: var(--font-display);
+        font-size: 1.35rem;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+      }
+      .brand::before {
+        content: '';
+        width: 1.9rem;
+        height: 0.34rem;
+        background: var(--marker);
+        transform: skewX(-14deg);
+        border-radius: 1px;
+      }
+      .state {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+      .state span {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .state b {
+        color: var(--ink);
+        font-weight: 500;
+      }
+      .actions {
+        margin-left: auto;
+        display: flex;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+      }
+      button {
+        font: inherit;
+        font-family: var(--font-mono);
+        font-size: 11.5px;
+        letter-spacing: 0.06em;
+        padding: 0.5rem 0.8rem;
+        border: 1px solid var(--rule);
+        background: var(--surface);
+        color: var(--ink);
+        border-radius: 3px;
+        cursor: pointer;
+        transition: all 0.18s ease;
+      }
+      button:hover:not(:disabled) {
+        border-color: var(--pine);
+        color: var(--pine);
+      }
+      button:disabled {
+        opacity: 0.45;
+        cursor: progress;
+      }
+      button.primary {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: var(--paper);
+      }
+      button.primary:hover:not(:disabled) {
+        background: var(--pine);
+        border-color: var(--pine);
+        color: #fff;
+      }
+      button.icon {
+        padding: 0.4rem 0.55rem;
+      }
+
+      /* 三栏 */
+      main {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: 15rem minmax(0, 1fr) minmax(0, 1fr);
+      }
+      .col {
+        min-width: 0;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .col + .col {
+        border-left: 1px solid var(--rule);
+      }
+      .col__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        padding: 0.6rem 0.8rem;
+        border-bottom: 1px solid var(--rule);
+        background: var(--paper);
+      }
+      .col__body {
+        flex: 1;
+        min-height: 0;
+        overflow: auto;
+      }
+
+      /* 文章列表 */
+      .search {
+        padding: 0.5rem 0.7rem;
+        border-bottom: 1px solid var(--rule-soft);
+      }
+      .search input {
+        width: 100%;
+        font: inherit;
+        padding: 0.4rem 0.55rem;
+        border: 1px solid var(--rule);
+        border-radius: 3px;
+        background: var(--surface);
+        color: var(--ink);
+      }
+      .list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .list li {
+        border-bottom: 1px solid var(--rule-soft);
+      }
+      .list button.item {
+        width: 100%;
+        text-align: left;
+        display: block;
+        padding: 0.6rem 0.75rem;
+        border: 0;
+        border-left: 2px solid transparent;
+        border-radius: 0;
+        background: transparent;
+        font-family: var(--font-body);
+        font-size: 13.5px;
+        line-height: 1.4;
+      }
+      .list button.item:hover {
+        background: var(--surface);
+        color: var(--ink);
+        border-left-color: var(--rule);
+      }
+      .list button.item[aria-current='true'] {
+        background: var(--surface);
+        border-left-color: var(--pine);
+      }
+      .list .t {
+        display: block;
+        font-family: var(--font-display);
+        font-size: 15px;
+        color: var(--ink);
+      }
+      .list .m {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        margin-top: 0.2rem;
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        color: var(--muted);
+        letter-spacing: 0.04em;
+      }
+      .pill {
+        padding: 0.05rem 0.35rem;
+        border-radius: 2px;
+        background: var(--pine-wash);
+        color: var(--pine);
+      }
+      .pill.draft {
+        background: transparent;
+        border: 1px solid var(--rule);
+        color: var(--muted);
+      }
+
+      /* 表单 + 编辑器 */
+      .form {
+        padding: 0.75rem 0.9rem;
+        border-bottom: 1px solid var(--rule);
+        display: grid;
+        gap: 0.55rem;
+        grid-template-columns: 1fr 8.5rem;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+      }
+      .field.wide {
+        grid-column: 1 / -1;
+      }
+      .field label {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      input[type='text'],
+      input[type='date'],
+      textarea {
+        font: inherit;
+        padding: 0.4rem 0.55rem;
+        border: 1px solid var(--rule);
+        border-radius: 3px;
+        background: var(--surface);
+        color: var(--ink);
+        width: 100%;
+      }
+      input:focus,
+      textarea:focus {
+        outline: 2px solid var(--pine);
+        outline-offset: -1px;
+      }
+      .switch {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 12.5px;
+        color: var(--ink-soft);
+      }
+      #editor {
+        flex: 1;
+        min-height: 0;
+        border: 0;
+        border-radius: 0;
+        resize: none;
+        padding: 1rem 1.1rem;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        line-height: 1.75;
+        background: var(--surface);
+        color: var(--ink);
+      }
+      iframe {
+        flex: 1;
+        min-height: 0;
+        width: 100%;
+        border: 0;
+        background: var(--surface);
+      }
+      .empty {
+        padding: 2.5rem 1.25rem;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      /* 日志抽屉 */
+      #log {
+        display: none;
+        height: 32vh;
+        border-top: 1px solid var(--ink);
+        background: var(--surface);
+        flex-direction: column;
+      }
+      #log.open {
+        display: flex;
+      }
+      #log .col__head {
+        background: var(--surface);
+      }
+      #log pre {
+        flex: 1;
+        margin: 0;
+        padding: 0.7rem 0.9rem;
+        overflow: auto;
+        font-family: var(--font-mono);
+        font-size: 11.5px;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        word-break: break-word;
+        color: var(--ink-soft);
+      }
+      #toast {
+        position: fixed;
+        left: 50%;
+        bottom: 1.4rem;
+        translate: -50% 0;
+        background: var(--ink);
+        color: var(--paper);
+        padding: 0.6rem 1rem;
+        border-radius: 4px;
+        font-size: 13px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+        z-index: 20;
+        max-width: 90vw;
+      }
+      #toast.show {
+        opacity: 1;
+      }
+      #toast.err {
+        background: var(--danger);
+        color: #fff;
+      }
+
+      /* 新建弹窗 */
+      dialog {
+        border: 1px solid var(--ink);
+        border-radius: 4px;
+        padding: 0;
+        background: var(--paper);
+        color: var(--ink);
+        width: min(30rem, 92vw);
+      }
+      dialog::backdrop {
+        background: rgba(10, 14, 11, 0.4);
+      }
+      dialog form {
+        padding: 1.1rem 1.2rem 1.2rem;
+        display: grid;
+        gap: 0.7rem;
+      }
+      dialog h2 {
+        font-family: var(--font-display);
+        font-weight: 400;
+        font-size: 1.5rem;
+        margin: 0 0 0.2rem;
+      }
+      dialog .row {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-end;
+        margin-top: 0.3rem;
+      }
+
+      @media (max-width: 1100px) {
+        main {
+          grid-template-columns: 13rem minmax(0, 1fr);
+        }
+        #previewCol {
+          display: none;
+        }
+      }
+      @media (max-width: 720px) {
+        header {
+          padding: 0.55rem 0.7rem;
+          gap: 0.4rem;
+        }
+        .state {
+          display: none;
+        }
+        .actions {
+          width: 100%;
+          margin-left: 0;
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+        }
+        .actions::-webkit-scrollbar {
+          display: none;
+        }
+        .actions button {
+          flex: 0 0 auto;
+          padding: 0.55rem 0.7rem;
+        }
+        main {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        #listCol {
+          display: none;
+        }
+        #listCol.show {
+          display: flex;
+          position: fixed;
+          inset: var(--header-h, 3.4rem) 0 0;
+          background: var(--paper);
+          z-index: 10;
+        }
+        .form {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">博客控制台</div>
+      <div class="state" id="state"></div>
+      <div class="actions">
+        <button class="icon" id="btnList" title="文章列表">☰</button>
+        <button class="icon" id="btnTheme" title="预览深浅色">◐</button>
+        <button id="btnNew">新建文章</button>
+        <button id="btnBuild">构建检查</button>
+        <button id="btnSave" title="保存（快捷键 Ctrl+S）">保存</button>
+        <button class="primary" id="btnPublish">发布上线</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="col" id="listCol">
+        <div class="col__head">
+          <span class="mono">文章</span>
+          <span class="mono" id="count"></span>
+        </div>
+        <div class="search">
+          <input type="text" id="search" placeholder="搜索标题 / 标签 / 文件名" />
+        </div>
+        <div class="col__body">
+          <ul class="list" id="list"></ul>
+          <p class="empty" id="listEmpty" hidden>没有文章。点右上角「新建文章」开始写。</p>
+        </div>
+      </section>
+
+      <section class="col" id="editCol">
+        <div class="col__head">
+          <span class="mono" id="currentFile">未选择文章</span>
+          <span style="display:flex;gap:.5rem;align-items:center">
+            <span class="mono" id="words"></span>
+            <button class="icon" id="btnDelete" title="删除这篇（不可恢复）" hidden>删除</button>
+          </span>
+        </div>
+        <div class="form" id="form" hidden>
+          <div class="field wide">
+            <label for="fTitle">标题</label>
+            <input type="text" id="fTitle" />
+          </div>
+          <div class="field wide">
+            <label for="fDesc">摘要（用于 SEO 和列表）</label>
+            <input type="text" id="fDesc" />
+          </div>
+          <div class="field">
+            <label for="fTags">标签（逗号分隔）</label>
+            <input type="text" id="fTags" placeholder="随笔, 部署" />
+          </div>
+          <div class="field">
+            <label for="fDate">日期</label>
+            <input type="date" id="fDate" />
+          </div>
+          <div class="field wide switch">
+            <input type="checkbox" id="fDraft" />
+            <label for="fDraft" style="text-transform:none;letter-spacing:0;font-size:12.5px">
+              草稿（勾上则不发布到线上）
+            </label>
+          </div>
+        </div>
+        <div class="col__body" style="display:flex">
+          <textarea id="editor" spellcheck="false" placeholder="用 Markdown 写正文…"></textarea>
+        </div>
+      </section>
+
+      <section class="col" id="previewCol">
+        <div class="col__head">
+          <span class="mono">实时预览</span>
+          <span class="mono" id="previewHint">和线上同一套样式</span>
+        </div>
+        <iframe id="preview" title="预览"></iframe>
+      </section>
+    </main>
+
+    <section id="log">
+      <div class="col__head">
+        <span class="mono" id="logTitle">输出</span>
+        <button class="icon" id="btnLogClose">✕</button>
+      </div>
+      <pre id="logBody"></pre>
+    </section>
+
+    <dialog id="dlg">
+      <form method="dialog" id="dlgForm">
+        <h2>新建文章</h2>
+        <div class="field">
+          <label for="nTitle">标题</label>
+          <input type="text" id="nTitle" required placeholder="例如：我为什么开始写博客" />
+        </div>
+        <div class="field">
+          <label for="nTags">标签</label>
+          <input type="text" id="nTags" placeholder="随笔" />
+        </div>
+        <div class="field switch">
+          <input type="checkbox" id="nDraft" checked />
+          <label for="nDraft" style="text-transform:none;letter-spacing:0;font-size:12.5px">
+            先存成草稿
+          </label>
+        </div>
+        <div class="row">
+          <button value="cancel" formnovalidate>取消</button>
+          <button value="ok" class="primary">创建</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div id="toast"></div>
+    <script>
+      window.__TOKEN__ = '%%TOKEN%%';
+    </script>
+    <script type="module" src="/admin.mjs"></script>
+  </body>
+</html>

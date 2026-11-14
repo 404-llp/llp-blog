@@ -1,0 +1,30 @@
+---
+interface Props {
+  slug: string;
+  large?: boolean;
+}
+
+const { slug, large = false } = Astro.props;
+---
+
+<span class="counter" data-views-box hidden aria-live="polite">
+  <b data-views={slug}>···</b>
+  {large ? '次阅读' : '次浏览'}
+</span>
+
+<script>
+  // 向 Cloudflare Pages Function 请求阅读数；接口不存在（未绑定 KV）时静默隐藏。
+  const box = document.querySelector('[data-views-box]');
+  const slot = document.querySelector<HTMLElement>('[data-views]');
+
+  if (box && slot) {
+    const slug = slot.dataset.views!;
+    fetch(`/api/views/${encodeURIComponent(slug)}`, { method: 'POST', cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then(({ views }) => {
+        slot.textContent = String(views);
+        box.removeAttribute('hidden');
+      })
+      .catch(() => {});
+  }
+</script>
